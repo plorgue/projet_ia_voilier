@@ -12,19 +12,19 @@ namespace Projet_IA_Voilier
 {
     public partial class MainWindow : Window
     {
-        public PathDrawing pathDrawing { get; set; }
-        
-        int NbrOfColumn = 4; // nombre de colonne dans le control panel
-        private Dictionary<string, string> hints = new Dictionary<string, string>();
-        Point startingPoint = new Point(0, 0);
-        Point destinationPoint = new Point(0, 0);
-        char wind = 'a';
-        List<Arc> path = new List<Arc>(); 
-        long mockUpDuration = 0;
-        int nbrOuvert = 0;
-        int nbrFerme = 0;
-        List<Arc> arcs = new List<Arc>();
-        double totalTime = 0;
+        public PathDrawing PathDrawing { get; set; }
+
+        readonly int NbrOfColumn = 4; // nombre de colonne dans le control panel
+        private readonly Dictionary<string, string> hints = new Dictionary<string, string>();
+        readonly Point startingPoint = new Point(0, 0);
+        readonly Point destinationPoint = new Point(0, 0);
+        readonly List<Arc> path = new List<Arc>();
+        private List<Arc> arcs = new List<Arc>();
+        private char wind = 'a';
+        private long mockUpDuration = 0;
+        private int nbrOuvert = 0;
+        private int nbrFerme = 0;
+        private double totalTime = 0;
 
         public MainWindow()
         {
@@ -38,10 +38,8 @@ namespace Projet_IA_Voilier
         // Initialisation
         private void InitWindow()
         {
-            double height = SystemParameters.PrimaryScreenHeight;
             double width = SystemParameters.PrimaryScreenWidth;
-            this.Resources["ColumnWidth_ControlPanel"] = new GridLength(Math.Max(width / NbrOfColumn, 270));
-            
+            this.Resources["ColumnWidth_ControlPanel"] = new GridLength(Math.Max(width / NbrOfColumn, 270));   
         }
         private void InitHintDictionnary()
         {
@@ -57,7 +55,7 @@ namespace Projet_IA_Voilier
         // Evenements
         private void CanvasSea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            pathDrawing = new PathDrawing(canvasSea, e.NewSize.Height, e.NewSize.Width);
+            PathDrawing = new PathDrawing(canvasSea, e.NewSize.Height, e.NewSize.Width);
             ShowResult();
         }
 
@@ -129,7 +127,7 @@ namespace Projet_IA_Voilier
             AllocateTextBoxIntValue(sender);
             TryShowFlag();
         }
-        private void rb_wind_Checked(object sender, RoutedEventArgs e)
+        private void    rb_wind_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is RadioButton)
             {
@@ -195,14 +193,14 @@ namespace Projet_IA_Voilier
                 tb_running.Text = "Simulation finie";
                 tb_running.Foreground = new SolidColorBrush(Color.FromRgb(0, 100, 0));
                 //clean la vu
-                pathDrawing.ClearDraw();
+                PathDrawing.ClearDraw();
                 //dessier les lignes
                 Sortie("arcs",arcs.Count);
-                pathDrawing.DrawArcs(arcs, Color.FromArgb(120, 255, 255, 255), 1);
-                pathDrawing.DrawArcs(path, Color.FromRgb(0, 180, 0), 3);
+                PathDrawing.DrawArcs(arcs, Color.FromArgb(120, 255, 255, 255), 1);
+                PathDrawing.DrawArcs(path, Color.FromRgb(0, 180, 0), 3);
                 //dessiner bateau et drapeau
-                pathDrawing.DrawStart(startingPoint);
-                pathDrawing.DrawDestination(destinationPoint);
+                PathDrawing.DrawStart(startingPoint);
+                PathDrawing.DrawDestination(destinationPoint);
                 //afficher le temps, nombre d'ouvert, fermé
                 tb_durMockUp.Text = "Durée simulation: " + Math.Round(mockUpDuration / 1000.0,2) + "s";
                 tb_durReal.Text = "Durée de navigation estimé: " + Math.Round(totalTime,2) + "h";
@@ -223,8 +221,7 @@ namespace Projet_IA_Voilier
             if (textBox is TextBox)
             {
                 TextBox tb = (textBox as TextBox);
-                int value = -1;
-                int.TryParse((textBox as TextBox).Text, out value);
+                int.TryParse((textBox as TextBox).Text, out int value);
                 if (value >= 0)
                 {
                     if (tb.Name == tb_xInit.Name)
@@ -253,14 +250,14 @@ namespace Projet_IA_Voilier
 
         private void TryShowBoat()
         {
-            if (startingPoint.X < 301 && startingPoint.Y < 301 && pathDrawing != null)
-                pathDrawing.DrawStart(startingPoint);
+            if (startingPoint.X < 301 && startingPoint.Y < 301 && PathDrawing != null)
+                PathDrawing.DrawStart(startingPoint);
         }
 
         private void TryShowFlag()
         {
-            if (startingPoint.X < 301 && destinationPoint.Y < 301 && pathDrawing != null) 
-                pathDrawing.DrawDestination(destinationPoint);
+            if (startingPoint.X < 301 && destinationPoint.Y < 301 && PathDrawing != null) 
+                PathDrawing.DrawDestination(destinationPoint);
         }
 
         public void Sortie(string desc, object value)

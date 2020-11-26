@@ -11,7 +11,7 @@ namespace Projet_IA_Voilier
 
     class SearchTree
     {
-        public PathDrawing drawing { get; set; }
+        public PathDrawing Drawing { get; set; }
         public List<GenericNode> L_Ouverts;
         public List<GenericNode> L_Fermes;
         public GenericNode StartingNode { get; set; }
@@ -201,7 +201,7 @@ namespace Projet_IA_Voilier
                 while ((N != null) && (trouve == false));
             }
         }
-        /*
+        
         // Si on veut afficher l'arbre de recherche, il suffit de passer un treeview en paramètres
         // Celui-ci est mis à jour avec les noeuds de la liste des fermés, on ne tient pas compte des ouverts
         public void GetSearchTree(System.Windows.Controls.TreeView TV)
@@ -228,7 +228,7 @@ namespace Projet_IA_Voilier
                 if (GNfils.GetEnfants().Count > 0) AjouteBranche(GNfils, TNfils);
             }
         }
-        */
+        
 
 
         public static void Sortie(string desc, object value)

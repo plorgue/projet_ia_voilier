@@ -121,7 +121,7 @@ namespace Projet_IA_Voilier
             double boatspeed;
             double boatdirection = Math.Atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
             // On ramène entre 0 et 360
-            if (boatdirection < 0) boatdirection = boatdirection + 360;
+            if (boatdirection < 0) boatdirection += 360;
             boatdirection += 90; // car repère inversé (y vers le bas)  
 
             // calcul de la différence angulaire
@@ -150,7 +150,7 @@ namespace Projet_IA_Voilier
             return (distance / boatspeed);
         }
         
-        public double GetWindSpeed(double x, double y)
+        public double GetWindSpeed(double y)
         {
             if (Wind == 'a')
                 return 50;
@@ -163,7 +163,7 @@ namespace Projet_IA_Voilier
             else return 20;
         }
 
-        public double GetWindDirection(double x, double y)
+        public double GetWindDirection(double y)
         {
             if (Wind == 'a')
                 return 30;

@@ -17,21 +17,23 @@ namespace Projet_IA_Voilier
     public class PathDrawing
     {
         // controls
-        Canvas canvas;
-        Image boat, flag;
+        readonly Canvas canvas;
+        private Image boat, flag;
+        readonly List<Line> lines = new List<Line>();
 
         // dimensions
-        Thickness offsets;
-        double seaSize, mapSize, height, width, padding;
-        int maxCoordinates = 300;
-        double scale;
+        private Thickness offsets;
+        private double seaSize;
+        private double mapSize;
+        private readonly double height;
+        private readonly double width;
+        private double padding;
+        readonly int maxCoordinates = 300;
+        private double scale;
 
         // apparence
-        SolidColorBrush lineBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
         //double lineThickness = 1;
-        double iconSize = 50;
-
-        List<Line> lines = new List<Line>();
+        readonly double iconSize = 50;
 
 
         public PathDrawing(Canvas canvas, double height, double width)
@@ -46,7 +48,7 @@ namespace Projet_IA_Voilier
             canvas.Children.Clear();
 
             // L'image est un peu trop claire donc j'ajoute un rectangle par dessus pour l'assombrir
-            DarkenBackground(0.3); 
+            DarkenBackground(); 
 
             CreateBoatAndFlag();
         }
@@ -88,7 +90,6 @@ namespace Projet_IA_Voilier
         /// Ajoute une étape au trajet et dessine les modifications
         /// </summary>
         /// <param name="point"></param>
-
         public void DrawArc(Arc arc, Color lineColor, double lineThickness)
         {
             Line line = arc.GetLineScaled(scale, offsets.Left, offsets.Top);
@@ -151,7 +152,7 @@ namespace Projet_IA_Voilier
 
         }
 
-        private void DarkenBackground(double darkeningRate)
+        private void DarkenBackground()
         {
             byte color = 0;
             byte alpha = (byte)(0.3 * 255);
