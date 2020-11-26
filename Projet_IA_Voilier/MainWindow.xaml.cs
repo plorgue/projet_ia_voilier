@@ -12,19 +12,24 @@ namespace Projet_IA_Voilier
 {
     public partial class MainWindow : Window
     {
-        public PathDrawing PathDrawing { get; set; }
+        private PathDrawing PathDrawing { get; set; }
 
-        readonly int NbrOfColumn = 4; // nombre de colonne dans le control panel
-        private readonly Dictionary<string, string> hints = new Dictionary<string, string>();
-        readonly Point startingPoint = new Point(0, 0);
-        readonly Point destinationPoint = new Point(0, 0);
-        readonly List<Arc> path = new List<Arc>();
-        private List<Arc> arcs = new List<Arc>();
+        // POur l'affichage
+        private readonly int nbrColumn = 4; // nombre de colonne dans le control panel
+        private readonly Dictionary<string, string> hints = new Dictionary<string, string>(); //indice textbox
+
+        // Stockage des valeurs de champs complétés pas l'ut
+        private readonly Point startingPoint = new Point(0, 0);
+        private readonly Point destinationPoint = new Point(0, 0);
         private char wind = 'a';
-        private long mockUpDuration = 0;
-        private int nbrOuvert = 0;
-        private int nbrFerme = 0;
-        private double totalTime = 0;
+
+        // Issus de la simulation
+        private readonly List<Arc> path = new List<Arc>(); // plus cours chemain
+        private List<Arc> arcs = new List<Arc>(); // liste des arcs contenu dans les fermé
+        private long mockUpDuration = 0; // durée de la simu
+        private int nbOuvert = 0; 
+        private int nbFerme = 0;
+        private double totalTime = 0; // temps du trajet
 
         public MainWindow()
         {
@@ -39,8 +44,9 @@ namespace Projet_IA_Voilier
         private void InitWindow()
         {
             double width = SystemParameters.PrimaryScreenWidth;
-            this.Resources["ColumnWidth_ControlPanel"] = new GridLength(Math.Max(width / NbrOfColumn, 270));   
+            this.Resources["ColumnWidth_ControlPanel"] = new GridLength(Math.Max(width / nbrColumn, 270));   
         }
+
         private void InitHintDictionnary()
         {
             hints.Add("tb_xInit", "0 - 300");
@@ -64,7 +70,7 @@ namespace Projet_IA_Voilier
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonRun_Click(object sender, RoutedEventArgs e)
+        private void ButtonRun_Click(object sender, RoutedEventArgs e)
         {
             tb_running.Visibility = Visibility.Visible;
             tb_running.Text = "Simulation en cours";
@@ -104,30 +110,30 @@ namespace Projet_IA_Voilier
             }
         }
 
-        private void xInit_TextChanged(object sender, TextChangedEventArgs e)
+        private void XInit_TextChanged(object sender, TextChangedEventArgs e)
         {
             AllocateTextBoxIntValue(sender);
             TryShowBoat();
         }
 
-        private void yInit_TextChanged(object sender, TextChangedEventArgs e)
+        private void YInit_TextChanged(object sender, TextChangedEventArgs e)
         {
             AllocateTextBoxIntValue(sender);
             TryShowBoat();
         }
 
-        private void xTarget_TextChanged(object sender, TextChangedEventArgs e)
+        private void XTarget_TextChanged(object sender, TextChangedEventArgs e)
         {
             AllocateTextBoxIntValue(sender);
             TryShowFlag();
         }
 
-        private void yTarget_TextChanged(object sender, TextChangedEventArgs e)
+        private void YTarget_TextChanged(object sender, TextChangedEventArgs e)
         {
             AllocateTextBoxIntValue(sender);
             TryShowFlag();
         }
-        private void    rb_wind_Checked(object sender, RoutedEventArgs e)
+        private void Rb_wind_Checked(object sender, RoutedEventArgs e)
         {
             if (sender is RadioButton)
             {
@@ -168,7 +174,7 @@ namespace Projet_IA_Voilier
                 NodeLocation startingNode = new NodeLocation(startingPoint, wind, theta);
                 NodeLocation destination = new NodeLocation(destinationPoint, wind, theta);
                 SearchTree search = new SearchTree(startingNode, destination);
-                List<GenericNode> res = search.RechercheSolutionAEtoile(out nbrFerme, out nbrOuvert, out mockUpDuration, out arcs);
+                List<GenericNode> res = search.RechercheSolutionAEtoile(out nbFerme, out nbOuvert, out mockUpDuration, out arcs);
 
                 totalTime = res[res.Count - 1].GetGCost();
                 for(int i = 1; i < res.Count; i++)
@@ -204,9 +210,9 @@ namespace Projet_IA_Voilier
                 //afficher le temps, nombre d'ouvert, fermé
                 tb_durMockUp.Text = "Durée simulation: " + Math.Round(mockUpDuration / 1000.0,2) + "s";
                 tb_durReal.Text = "Durée de navigation estimé: " + Math.Round(totalTime,2) + "h";
-                tb_open.Text = "Nombre d'ouvert: " + nbrOuvert;
-                tb_close.Text = "Nombre de fermé: " + nbrFerme;
-                tb_somme.Text = "Nombre de noeuds total: " + (nbrFerme + nbrOuvert);
+                tb_open.Text = "Nombre d'ouvert: " + nbOuvert;
+                tb_close.Text = "Nombre de fermé: " + nbFerme;
+                tb_somme.Text = "Nombre de noeuds total: " + (nbFerme + nbOuvert);
 
             });
         }
@@ -236,7 +242,7 @@ namespace Projet_IA_Voilier
             }
         }
 
-        public double GetCoordSystemThetaRotation()
+        private double GetCoordSystemThetaRotation()
         {
             if (startingPoint.X >= destinationPoint.X && startingPoint.Y >= destinationPoint.Y)
                 return Math.Atan(Math.Abs(startingPoint.X - destinationPoint.X) / Math.Abs(startingPoint.Y - destinationPoint.Y));
@@ -259,6 +265,11 @@ namespace Projet_IA_Voilier
             if (startingPoint.X < 301 && destinationPoint.Y < 301 && PathDrawing != null) 
                 PathDrawing.DrawDestination(destinationPoint);
         }
+
+
+
+
+
 
         public void Sortie(string desc, object value)
         {

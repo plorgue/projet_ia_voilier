@@ -17,9 +17,9 @@ namespace Projet_IA_Voilier
     public class PathDrawing
     {
         // controls
-        readonly Canvas canvas;
+        private readonly Canvas canvas;
         private Image boat, flag;
-        readonly List<Line> lines = new List<Line>();
+        private readonly List<Line> lines = new List<Line>();
 
         // dimensions
         private Thickness offsets;
@@ -28,13 +28,12 @@ namespace Projet_IA_Voilier
         private readonly double height;
         private readonly double width;
         private double padding;
-        readonly int maxCoordinates = 300;
+        private readonly double iconSize = 50;
         private double scale;
+        private readonly int maxCoordinates = 300;
 
         // apparence
         //double lineThickness = 1;
-        readonly double iconSize = 50;
-
 
         public PathDrawing(Canvas canvas, double height, double width)
         {
@@ -51,6 +50,30 @@ namespace Projet_IA_Voilier
             DarkenBackground(); 
 
             CreateBoatAndFlag();
+        }
+
+        private void InitializeProperties()
+        {
+            padding = iconSize;
+            seaSize = Math.Min(height, width);
+            mapSize = seaSize - 2 * padding;
+            double margin = (Math.Max(height, width) - seaSize) / 2;
+            offsets = height > width ? (new Thickness(padding, margin + padding, padding, margin + padding)) : (new Thickness(margin + padding, padding, margin + padding, padding));
+            scale = mapSize / maxCoordinates;
+        }
+
+        private void DarkenBackground()
+        {
+            byte color = 0;
+            byte alpha = (byte)(0.3 * 255);
+            Rectangle rectangle = new Rectangle
+            {
+                Width = seaSize,
+                Height = seaSize,
+                Fill = new SolidColorBrush(Color.FromArgb(alpha, color, color, color)),
+                Margin = new Thickness(offsets.Left - padding, offsets.Top - padding, offsets.Right - padding, offsets.Bottom - padding)
+            };
+            canvas.Children.Add(rectangle);
         }
 
         /// <summary>
@@ -74,16 +97,6 @@ namespace Projet_IA_Voilier
             };
             canvas.Children.Add(flag);
             canvas.Children.Add(boat);
-        }
-
-        private void InitializeProperties()
-        {
-            padding = iconSize;
-            seaSize = Math.Min(height, width);
-            mapSize = seaSize - 2 * padding;
-            double margin = (Math.Max(height, width) - seaSize) / 2;
-            offsets = height > width ? (new Thickness(padding,margin+padding,padding,margin+padding)) : (new Thickness(margin+padding,padding,margin+padding,padding));
-            scale = mapSize / maxCoordinates;
         }
 
         /// <summary>
@@ -151,21 +164,6 @@ namespace Projet_IA_Voilier
 
 
         }
-
-        private void DarkenBackground()
-        {
-            byte color = 0;
-            byte alpha = (byte)(0.3 * 255);
-            Rectangle rectangle = new Rectangle
-            {
-                Width = seaSize,
-                Height = seaSize,
-                Fill = new SolidColorBrush(Color.FromArgb(alpha, color, color, color)),
-                Margin = new Thickness(offsets.Left - padding, offsets.Top - padding, offsets.Right - padding, offsets.Bottom - padding)
-            };
-            canvas.Children.Add(rectangle);
-        }
-
 
 
 

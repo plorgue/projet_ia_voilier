@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 namespace Projet_IA_Voilier
 {
 
-    class SearchTree
+    class SearchTree    
     {
-        public PathDrawing Drawing { get; set; }
-        public List<GenericNode> L_Ouverts;
-        public List<GenericNode> L_Fermes;
+        public List<GenericNode> lOuverts;
+        public List<GenericNode> lFermes;
         public GenericNode StartingNode { get; set; }
         public GenericNode DestinationNode { get; set; }
 
@@ -25,21 +24,21 @@ namespace Projet_IA_Voilier
 
         public int CountInOpenList()
         {
-            return L_Ouverts.Count;
+            return lOuverts.Count;
         }
         public int CountInClosedList()
         {
-            return L_Fermes.Count;
+            return lFermes.Count;
         }
 
         private GenericNode ChercheNodeDansFermes(GenericNode N2)
         {
             int i = 0;
 
-            while (i < L_Fermes.Count)
+            while (i < lFermes.Count)
             {
-                if (L_Fermes[i].IsEqual(N2))
-                    return L_Fermes[i];
+                if (lFermes[i].IsEqual(N2))
+                    return lFermes[i];
                 i++;
             }
             return null;
@@ -49,10 +48,10 @@ namespace Projet_IA_Voilier
         {
             int i = 0;
 
-            while (i < L_Ouverts.Count)
+            while (i < lOuverts.Count)
             {
-                if (L_Ouverts[i].IsEqual(N2))
-                    return L_Ouverts[i];
+                if (lOuverts[i].IsEqual(N2))
+                    return lOuverts[i];
                 i++;
             }
             return null;
@@ -64,21 +63,21 @@ namespace Projet_IA_Voilier
             Sortie("simu", "start");
             arcs = new List<Arc>();
 
-            L_Ouverts = new List<GenericNode>();
-            L_Fermes = new List<GenericNode>();
+            lOuverts = new List<GenericNode>();
+            lFermes = new List<GenericNode>();
             // Le noeud passé en paramètre est supposé être le noeud initial
             GenericNode N = StartingNode;
-            L_Ouverts.Add(StartingNode);
+            lOuverts.Add(StartingNode);
 
             // tant que le noeud n'est pas terminal et que ouverts n'est pas vide
-            while (L_Ouverts.Count != 0 && N.EndState(DestinationNode) == false)
+            while (lOuverts.Count != 0 && N.EndState(DestinationNode) == false)
             {
                 if ((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) - milliseconds > 20 * 60 * 1000) 
                     break;
                 // Le meilleur noeud des ouverts est supposé placé en tête de liste
                 // On le place dans les fermés
-                L_Ouverts.Remove(N);
-                L_Fermes.Add(N);
+                lOuverts.Remove(N);
+                lFermes.Add(N);
 
                 if(N.GetNoeud_Parent() != null)
                 {
@@ -91,9 +90,9 @@ namespace Projet_IA_Voilier
 
                 // On prend le meilleur, donc celui en position 0, pour continuer à explorer les états
                 // A condition qu'il existe bien sûr
-                if (L_Ouverts.Count > 0)
+                if (lOuverts.Count > 0)
                 {
-                    N = L_Ouverts[0];
+                    N = lOuverts[0];
                 }
                 else
                 {
@@ -119,12 +118,12 @@ namespace Projet_IA_Voilier
 
             Sortie("simu", "end");
             duration = (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) - milliseconds;
-            nbrOuvert = L_Ouverts.Count;
-            nbrFerme = L_Fermes.Count;
+            nbrOuvert = lOuverts.Count;
+            nbrFerme = lFermes.Count;
             return _LN;
         }
 
-        private void MAJSuccesseurs(GenericNode N)
+        public void MAJSuccesseurs(GenericNode N)
         {
             // On fait appel à GetListSucc, méthode abstraite qu'on doit réécrire pour chaque
             // problème. Elle doit retourner la liste complète des noeuds successeurs de N.
@@ -151,7 +150,7 @@ namespace Projet_IA_Voilier
                             N2bis.Supprime_Liens_Parent();
                             N2bis.SetNoeud_Parent(N);
                             // Mise à jour des ouverts
-                            L_Ouverts.Remove(N2bis);
+                            lOuverts.Remove(N2bis);
                             this.InsertNewNodeInOpenList(N2bis);
                         }
                         // else on ne fait rien, car le nouveau chemin est moins bon
@@ -174,29 +173,29 @@ namespace Projet_IA_Voilier
         public void InsertNewNodeInOpenList(GenericNode NewNode)
         {
             // Insertion pour respecter l'ordre du cout total le plus petit au plus grand
-            if (this.L_Ouverts.Count == 0)
-                L_Ouverts.Add(NewNode); 
+            if (this.lOuverts.Count == 0)
+                lOuverts.Add(NewNode); 
             else
             {
-                GenericNode N = L_Ouverts[0];
+                GenericNode N = lOuverts[0];
                 bool trouve = false;
                 int i = 0;
                 do
                     if (NewNode.Cout_Total < N.Cout_Total)
                     {
-                        L_Ouverts.Insert(i, NewNode);
+                        lOuverts.Insert(i, NewNode);
                         trouve = true;
                     }
                     else
                     {
                         i++;
-                        if (L_Ouverts.Count == i)
+                        if (lOuverts.Count == i)
                         {
                             N = null;
-                            L_Ouverts.Insert(i, NewNode);
+                            lOuverts.Insert(i, NewNode);
                         }
                         else
-                            N = L_Ouverts[i];
+                            N = lOuverts[i];
                     }
                 while ((N != null) && (trouve == false));
             }
@@ -206,16 +205,16 @@ namespace Projet_IA_Voilier
         // Celui-ci est mis à jour avec les noeuds de la liste des fermés, on ne tient pas compte des ouverts
         public void GetSearchTree(System.Windows.Controls.TreeView TV)
         {
-            if (L_Fermes == null) return;
-            if (L_Fermes.Count == 0) return;
+            if (lFermes == null) return;
+            if (lFermes.Count == 0) return;
 
             // On suppose le TreeView préexistant
             TV.Items.Clear();
 
-            TreeNode TN = new TreeNode(L_Fermes[0].ToString());
+            TreeNode TN = new TreeNode(lFermes[0].ToString());
             TV.Items.Add(TN);
 
-            AjouteBranche(L_Fermes[0], TN);
+            AjouteBranche(lFermes[0], TN);
 
         }
         // AjouteBranche est exclusivement appelée par GetSearchTree; les noeuds sont ajoutés de manière récursive

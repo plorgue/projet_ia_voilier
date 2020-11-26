@@ -17,8 +17,8 @@ namespace Projet_IA_Voilier
         public static char Wind { get; set; }
         public double Theta { get; set; }
 
-        int pas = 2;
-        double Vmax = 45;
+        private readonly int pas = 2;
+        private readonly double vMax = 45;
 
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Projet_IA_Voilier
                 if (Location.X * Math.Sin(Theta) + Location.Y * Math.Cos(Theta) > startingPoint.X * Math.Sin(Theta) + startingPoint.Y * Math.Cos(Theta))
                     return 1000000;
                 else
-                    return Math.Sqrt(Math.Pow(Location.X - destination.X, 2) + Math.Pow(Location.Y - destination.Y, 2))/Vmax;
+                    return Math.Sqrt(Math.Pow(Location.X - destination.X, 2) + Math.Pow(Location.Y - destination.Y, 2))/vMax;
             }
             else
             {
@@ -116,8 +116,8 @@ namespace Projet_IA_Voilier
             double y2 = p2.Y;
             double distance = Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
             if (distance > 10) return 1000000;
-            double windspeed = GetWindSpeed((x1 + x2) / 2.0, (y1 + y2) / 2.0);
-            double winddirection = GetWindDirection((x1 + x2) / 2.0, (y1 + y2) / 2.0);
+            double windspeed = GetWindSpeed((y1 + y2) / 2.0);
+            double winddirection = GetWindDirection((y1 + y2) / 2.0);
             double boatspeed;
             double boatdirection = Math.Atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
             // On ramène entre 0 et 360

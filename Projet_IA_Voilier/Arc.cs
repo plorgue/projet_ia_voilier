@@ -55,24 +55,13 @@ namespace Projet_IA_Voilier
             Y2 = y2;
         }
 
-        public override bool Equals(object obj)
-        {
-           if(obj is Arc)
-            {
-                Arc arc = obj as Arc;
-                return X1 == arc.X1 && X2 == arc.X2 && Y1 == arc.Y1 && Y2 == arc.Y2;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public Line GetLineScaled(double scale, double shiftLeft, double shiftTop)
         {
             return new Line() { 
                 X1 = this.X1 * scale + shiftLeft, Y1 = this.Y1 * scale + shiftTop, 
                 X2 = this.X2 * scale + shiftLeft, Y2 = this.Y2 * scale + shiftTop };
         }
+
+
     }
 }

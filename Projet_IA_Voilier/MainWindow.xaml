@@ -58,7 +58,7 @@
                                  Text="0 - 300"
                                  GotFocus="EditText_GotFocus"
                                  LostFocus="EditText_LostFocus"
-                                 TextChanged="xInit_TextChanged"
+                                 TextChanged="XInit_TextChanged"
                                  />
                     </Grid>
                     <Grid>
@@ -71,7 +71,7 @@
                                  Text="0 - 300"
                                  GotFocus="EditText_GotFocus"
                                  LostFocus="EditText_LostFocus"
-                                 TextChanged="yInit_TextChanged"/>
+                                 TextChanged="YInit_TextChanged"/>
                     </Grid>
                 </StackPanel>
             </GroupBox>
@@ -93,7 +93,7 @@
                                  Text="0 - 300"
                                  GotFocus="EditText_GotFocus"
                                  LostFocus="EditText_LostFocus"
-                                 TextChanged="xTarget_TextChanged"/>
+                                 TextChanged="XTarget_TextChanged"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -105,7 +105,7 @@
                                  Text="0 - 300"
                                  GotFocus="EditText_GotFocus"
                                  LostFocus="EditText_LostFocus"
-                                 TextChanged="yTarget_TextChanged"/>
+                                 TextChanged="YTarget_TextChanged"/>
                     </Grid>
                 </StackPanel>
             </GroupBox>
@@ -119,11 +119,11 @@
                 Padding="0">
                 <StackPanel HorizontalAlignment="Center">
                     <RadioButton x:Name="rb_windA" Content="Vent type A" Style="{StaticResource RadioButtonStyle}"  IsChecked="True"
-                                 Checked="rb_wind_Checked"/>
+                                 Checked="Rb_wind_Checked"/>
                     <RadioButton x:Name="rb_windB" Content="Vent type B" Style="{StaticResource RadioButtonStyle}"
-                                 Checked="rb_wind_Checked"/>
+                                 Checked="Rb_wind_Checked"/>
                     <RadioButton x:Name="rb_windC" Content="Vent type C" Style="{StaticResource RadioButtonStyle}"
-                                 Checked="rb_wind_Checked"/>
+                                 Checked="Rb_wind_Checked"/>
                 </StackPanel>
             </GroupBox>
             <GridSplitter Grid.Column="3" Style="{StaticResource VerticalSplitter_Dark}"/>
@@ -132,7 +132,7 @@
                 Grid.Column="3">
                 <Button x:Name="buttonRun" 
                         Style="{StaticResource ButtonDark}"
-                        Click="buttonRun_Click">Lancer la simulation</Button>
+                        Click="ButtonRun_Click">Lancer la simulation</Button>
             </Grid>
 
         </Grid>

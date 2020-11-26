@@ -17,12 +17,22 @@ namespace Projet_IA_Voilier
         protected GenericNode ParentNode;     // noeud parent
         protected List<GenericNode> Enfants;  // noeuds enfants
 
+        //propriétés
+        public double Cout_Total
+        {
+            get { return TotalCost; }
+            set { TotalCost = value; }
+        }
+
+        // contructeur
         public GenericNode()
         {
             ParentNode = null;
             Enfants = new List<GenericNode>();
         }
 
+
+        //assesseurs
         public double GetHCost()
         {
             return HCost;
@@ -36,12 +46,6 @@ namespace Projet_IA_Voilier
         public void SetGCost(double g)
         {
             GCost = g;
-        }
-
-        public double Cout_Total
-        {
-            get { return TotalCost; }
-            set { TotalCost = value; }
         }
 
         public List<GenericNode> GetEnfants()
@@ -60,6 +64,7 @@ namespace Projet_IA_Voilier
             g.Enfants.Add(this);
         }
 
+        // Méthodes
         public void Supprime_Liens_Parent()
         {
             if (ParentNode == null) return;
@@ -78,14 +83,12 @@ namespace Projet_IA_Voilier
             TotalCost = GCost + HCost;
         }
 
-        // Méthodes abstrates, donc à surcharger obligatoirement avec override dans une classe fille
+        // Méthodes abstrates
         public abstract bool IsEqual(GenericNode N2);
         public abstract double GetArcCost(GenericNode N2);
         public abstract bool EndState(GenericNode Nf);
         public abstract List<GenericNode> GetListSucc();
         public abstract double CalculeHCost(GenericNode N0, GenericNode Nf);
-        // On peut aussi penser à surcharger ToString() pour afficher correctement un état
-        // c'est utile pour l'affichage du treenode
     }
     
 }
