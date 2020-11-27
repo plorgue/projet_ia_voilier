@@ -88,6 +88,7 @@ namespace Projet_IA_Voilier
                 Visibility = Visibility.Hidden,
                 Source = new BitmapImage(new Uri(@"http://zezete2.z.e.pic.centerblog.net/o/7db60b64.png"))
             };
+            System.Windows.Controls.Panel.SetZIndex(boat, 2);
             flag = new Image
             {
                 Height = iconSize,
@@ -95,6 +96,8 @@ namespace Projet_IA_Voilier
                 Visibility = Visibility.Hidden,
                 Source = new BitmapImage(new Uri(@"https://cdn.pixabay.com/photo/2016/09/01/15/42/flag-1636453_960_720.png"))
             };
+            System.Windows.Controls.Panel.SetZIndex(flag, 2);
+
             canvas.Children.Add(flag);
             canvas.Children.Add(boat);
         }
@@ -105,7 +108,7 @@ namespace Projet_IA_Voilier
         /// <param name="point"></param>
         public void DrawArc(Arc arc, Color lineColor, double lineThickness)
         {
-            Line line = arc.GetLineScaled(scale, offsets.Left, offsets.Top);
+            Line line = GetLineScaled(arc, offsets.Left, offsets.Top);
             line.Stroke = new SolidColorBrush(lineColor);
             line.StrokeThickness = lineThickness;
             lines.Add(line);
@@ -124,27 +127,26 @@ namespace Projet_IA_Voilier
         /// Affiche le bateau, le point de départ
         /// </summary>
         /// <param name="point"></param>
-        public void DrawStart(Point point)
+        public void MoveStart(Point point)
         {
             Point start = new Point
             {
                 X = point.X * mapSize / maxCoordinates + offsets.Left,
-                Y = point.Y * mapSize / maxCoordinates + offsets.Top,
+                Y = mapSize - (point.Y * mapSize / maxCoordinates) + offsets.Top,
             };
 
             boat.Visibility = Visibility.Visible;
-            boat.Margin = new Thickness(start.X - iconSize / 2, start.Y - iconSize / 1.1, 0, 0);
-            
+            boat.Margin = new Thickness(start.X - iconSize / 2, start.Y - iconSize / 1.1, 0, 0);            
         }
 
         /// <summary>
         /// Affiche le drapeau, l'objectif
         /// </summary>
         /// <param name="destination"></param>
-        public void DrawDestination(Point destination)
+        public void MoveDestination(Point destination)
         {
             double x = destination.X * mapSize / maxCoordinates - iconSize / 5 + offsets.Left;
-            double y = destination.Y * mapSize / maxCoordinates - iconSize + offsets.Top;
+            double y = mapSize - (destination.Y * mapSize / maxCoordinates) - iconSize + offsets.Top;
 
             flag.Visibility = Visibility.Visible;
             flag.Margin = new Thickness(x, y, 0, 0);
@@ -161,9 +163,19 @@ namespace Projet_IA_Voilier
             }
             foreach(UIElement element in elementsToRemove)
                 canvas.Children.Remove(element);
-
-
         }
+
+        public Line GetLineScaled(Arc arc, double shiftLeft, double shiftTop)
+        {
+            return new Line()
+            {
+                X1 = arc.X1 * scale + shiftLeft,
+                Y1 = mapSize - (arc.Y1 * scale) + shiftTop,
+                X2 = arc.X2 * scale + shiftLeft,
+                Y2 = mapSize - (arc.Y2 * scale) + shiftTop
+            };
+        }
+
 
 
 

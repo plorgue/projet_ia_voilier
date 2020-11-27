@@ -72,7 +72,7 @@ namespace Projet_IA_Voilier
             // tant que le noeud n'est pas terminal et que ouverts n'est pas vide
             while (lOuverts.Count != 0 && N.EndState(DestinationNode) == false)
             {
-                if ((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) - milliseconds > 20 * 60 * 1000) 
+                if ((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) - milliseconds > 5 * 60 * 1000) 
                     break;
                 // Le meilleur noeud des ouverts est supposé placé en tête de liste
                 // On le place dans les fermés
@@ -81,7 +81,7 @@ namespace Projet_IA_Voilier
 
                 if(N.GetNoeud_Parent() != null)
                 {
-                    arcs.Add(new Arc((N.GetNoeud_Parent() as NodeLocation).Location, (N as NodeLocation).Location));
+                    arcs.Add(new Arc((N.GetNoeud_Parent () as NodeLocation).Location, (N as NodeLocation).Location));
                 }
 
                 // Il faut trouver les noeuds successeurs de N

@@ -17,10 +17,11 @@ namespace Projet_IA_Voilier
         public static char Wind { get; set; }
         public double Theta { get; set; }
 
-        private readonly int pas = 2;
+        private readonly int pas = 3;
         private readonly double vMax = 45;
 
 
+        static bool flag = true;
         /// <summary>
         /// Constructeur
         /// </summary>
@@ -32,6 +33,12 @@ namespace Projet_IA_Voilier
             Location = location;
             Wind = wind;
             Theta = theta;
+
+            if (flag)
+            {
+                Sortie("test", TimeEstimation(new Point(170, 170), new Point(167 , 170)));
+                flag = false;
+            }
         }
 
         public override double CalculeHCost(GenericNode startingNode, GenericNode destinationNode)
@@ -40,6 +47,7 @@ namespace Projet_IA_Voilier
             {
                 Point startingPoint = (startingNode as NodeLocation).Location;
                 Point destination = (destinationNode as NodeLocation).Location;
+                Point parentPoint = (GetNoeud_Parent() as NodeLocation).Location;
                 
                 if (Location.X * Math.Sin(Theta) + Location.Y * Math.Cos(Theta) > startingPoint.X * Math.Sin(Theta) + startingPoint.Y * Math.Cos(Theta))
                     return 1000000;
@@ -50,6 +58,11 @@ namespace Projet_IA_Voilier
             {
                 return 0;
             }
+        }
+
+        public double Distance(Point p1, Point p2)
+        {
+            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
 
         public override bool EndState(GenericNode destinationNode)
@@ -80,18 +93,22 @@ namespace Projet_IA_Voilier
         public override List<GenericNode> GetListSucc()
         {
             List<GenericNode> nodes = new List<GenericNode>();
-            for(int i = -1; i <= 1; i++)
+            for (int i = -pas; i < pas; i++)
             {
-                for(int j = -1; j <= 1; j++)
-                {
-                    if (!(j == 0 && i == 0))
-                    {
-                        Point newPoint = new Point(Location.X + i*pas, Location.Y + j*pas);
-                        NodeLocation newNode = new NodeLocation(newPoint, Wind, Theta);
-                        nodes.Add(newNode);
-                    }
-                }
+                Point nP1 = new Point(Location.X + i, Location.Y + pas);
+                Point nP2 = new Point(Location.X + i + 1, Location.Y - pas);
+                Point nP3 = new Point(Location.X + pas, Location.Y + i + 1);
+                Point nP4 = new Point(Location.X + pas, Location.Y + i);
+                if (nP1.X > 0 && nP1.X < 300 && nP1.Y > 0 && nP1.Y < 300)
+                    nodes.Add(new NodeLocation(nP1, Wind, Theta));
+                if (nP2.X > 0 && nP2.X < 300 && nP2.Y > 0 && nP2.Y < 300)
+                    nodes.Add(new NodeLocation(nP2, Wind, Theta));
+                if (nP3.X > 0 && nP3.X < 300 && nP3.Y > 0 && nP3.Y < 300)
+                    nodes.Add(new NodeLocation(nP3, Wind, Theta));
+                if (nP4.X > 0 && nP4.X < 300 && nP4.Y > 0 && nP4.Y < 300)
+                    nodes.Add(new NodeLocation(nP4, Wind, Theta));
             }
+
             return nodes;
         }
 
@@ -117,15 +134,15 @@ namespace Projet_IA_Voilier
             double distance = Math.Sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
             if (distance > 10) return 1000000;
             double windspeed = GetWindSpeed((y1 + y2) / 2.0);
+            //Sortie("windsp", windspeed);
             double winddirection = GetWindDirection((y1 + y2) / 2.0);
+            //Sortie("winddir", winddirection);
             double boatspeed;
-            double boatdirection = Math.Atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-            // On ramène entre 0 et 360
-            if (boatdirection < 0) boatdirection += 360;
-            boatdirection += 90; // car repère inversé (y vers le bas)  
-
+            double boatdirection = MainWindow.AnglePointBateauOrdonnee(p1,p2)*180/Math.PI;
+            //Sortie("boatdir", boatdirection);
             // calcul de la différence angulaire
             double alpha = Math.Abs(boatdirection - winddirection);
+            //Sortie("alpha", alpha);
             // On se ramène à une différence entre 0 et 180 :
             if (alpha > 180) alpha = 360 - alpha;   
             if (alpha <= 45)
@@ -147,6 +164,8 @@ namespace Projet_IA_Voilier
                 return 1000000;
             // estimation du temps de navigation entre p1 et p2
 
+            //Sortie("speed", boatspeed);
+            //Sortie("dist", distance);
             return (distance / boatspeed);
         }
         

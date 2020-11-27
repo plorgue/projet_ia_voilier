@@ -148,13 +148,13 @@ namespace Projet_IA_Voilier
                         break;
                     case "rb_windB":
                         wind = 'b';
-                        RotateTransformWindArrowUp.Angle = 90;
-                        RotateTransformWindArrowDown.Angle = 180;
+                        RotateTransformWindArrowUp.Angle = 180;
+                        RotateTransformWindArrowDown.Angle = 90;
                         break;
                     case "rb_windC":
                         wind = 'c';
-                        RotateTransformWindArrowUp.Angle = 65;
-                        RotateTransformWindArrowDown.Angle = 170;
+                        RotateTransformWindArrowUp.Angle = 170;
+                        RotateTransformWindArrowDown.Angle = 65;
                         break;
                     }
                 }
@@ -170,7 +170,7 @@ namespace Projet_IA_Voilier
                 !tb_xTarget.Equals("") &&
                 !tb_yTarget.Equals(""))
             {
-                double theta = GetCoordSystemThetaRotation();
+                double theta = AnglePointBateauOrdonnee(destinationPoint, startingPoint);
                 NodeLocation startingNode = new NodeLocation(startingPoint, wind, theta);
                 NodeLocation destination = new NodeLocation(destinationPoint, wind, theta);
                 SearchTree search = new SearchTree(startingNode, destination);
@@ -205,13 +205,13 @@ namespace Projet_IA_Voilier
                 PathDrawing.DrawArcs(arcs, Color.FromArgb(120, 255, 255, 255), 1);
                 PathDrawing.DrawArcs(path, Color.FromRgb(0, 180, 0), 3);
                 //dessiner bateau et drapeau
-                PathDrawing.DrawStart(startingPoint);
-                PathDrawing.DrawDestination(destinationPoint);
+                PathDrawing.MoveStart(startingPoint);
+                PathDrawing.MoveDestination(destinationPoint);
                 //afficher le temps, nombre d'ouvert, fermé
                 tb_durMockUp.Text = "Durée simulation: " + Math.Round(mockUpDuration / 1000.0,2) + "s";
-                tb_durReal.Text = "Durée de navigation estimé: " + Math.Round(totalTime,2) + "h";
-                tb_open.Text = "Nombre d'ouvert: " + nbOuvert;
-                tb_close.Text = "Nombre de fermé: " + nbFerme;
+                tb_durReal.Text = "Temps de navigation estimé: " + Math.Round(totalTime,2) + "h";
+                tb_open.Text = "Nombre d'ouverts: " + nbOuvert;
+                tb_close.Text = "Nombre de fermés: " + nbFerme;
                 tb_somme.Text = "Nombre de noeuds total: " + (nbFerme + nbOuvert);
 
             });
@@ -242,28 +242,28 @@ namespace Projet_IA_Voilier
             }
         }
 
-        private double GetCoordSystemThetaRotation()
+        public static double AnglePointBateauOrdonnee(Point point, Point bateau)
         {
-            if (startingPoint.X >= destinationPoint.X && startingPoint.Y >= destinationPoint.Y)
-                return Math.Atan(Math.Abs(startingPoint.X - destinationPoint.X) / Math.Abs(startingPoint.Y - destinationPoint.Y));
-            else if (startingPoint.X >= destinationPoint.X && startingPoint.Y <= destinationPoint.Y)
-                return Math.PI / 2 + Math.Atan(Math.Abs(startingPoint.Y - destinationPoint.Y) / Math.Abs(startingPoint.X - destinationPoint.X));
-            else if (startingPoint.X <= destinationPoint.X && startingPoint.Y >= destinationPoint.Y)
-                return -Math.Atan(Math.Abs(startingPoint.X - destinationPoint.X) / Math.Abs(startingPoint.Y - destinationPoint.Y));
+            if (bateau.X >= point.X && bateau.Y >= point.Y)
+                return Math.Atan(Math.Abs(bateau.X - point.X) / Math.Abs(bateau.Y - point.Y));
+            else if (bateau.X >= point.X && bateau.Y <= point.Y)
+                return Math.PI / 2 + Math.Atan(Math.Abs(bateau.Y - point.Y) / Math.Abs(bateau.X - point.X));
+            else if (bateau.X <= point.X && bateau.Y >= point.Y)
+                return 2*Math.PI-Math.Atan(Math.Abs(bateau.X - point.X) / Math.Abs(bateau.Y - point.Y));
             else
-                return Math.PI + Math.Atan(Math.Abs(startingPoint.X - destinationPoint.X) / Math.Abs(startingPoint.Y - destinationPoint.Y));
+                return Math.PI + Math.Atan(Math.Abs(bateau.X - point.X) / Math.Abs(bateau.Y - point.Y));
         }
 
         private void TryShowBoat()
         {
             if (startingPoint.X < 301 && startingPoint.Y < 301 && PathDrawing != null)
-                PathDrawing.DrawStart(startingPoint);
+                PathDrawing.MoveStart(startingPoint);
         }
 
         private void TryShowFlag()
         {
             if (startingPoint.X < 301 && destinationPoint.Y < 301 && PathDrawing != null) 
-                PathDrawing.DrawDestination(destinationPoint);
+                PathDrawing.MoveDestination(destinationPoint);
         }
 
 
